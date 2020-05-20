@@ -19,8 +19,16 @@ ActiveRecord::Schema.define(version: 0) do
     t.index ["last_name"], name: "idx_actor_last_name"
   end
 
-# Could not dump table "address" because of following StandardError
-#   Unknown type 'geometry' for column 'location'
+  create_table "address", primary_key: "address_id", id: :integer, limit: 2, unsigned: true, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.string "address", limit: 50, null: false
+    t.string "address2", limit: 50
+    t.string "district", limit: 20, null: false
+    t.integer "city_id", limit: 2, null: false, unsigned: true
+    t.string "postal_code", limit: 10
+    t.string "phone", limit: 20, null: false
+    t.timestamp "last_update", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["city_id"], name: "idx_fk_city_id"
+  end
 
   create_table "category", primary_key: "category_id", id: :integer, limit: 1, unsigned: true, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", limit: 25, null: false
