@@ -9,6 +9,15 @@ $ bundle exec rails db:create
 $ bundle exec rails db < db/seed.sql 
 ```
 
+## 注意事項
+MySQLの8系を使う場合は以下のエラーが出ると思われます。`db/seed.sql`から`NO_AUTO_CREATE_USER`の記述を全て削除することで解決できます。
+
+```
+$ rails db < db/seed.sql                                                                                                                                
+ERROR 1231 (42000) at line 3348: Variable 'sql_mode' can't be set to the value of 'NO_AUTO_CREATE_USER'
+```
+
+
 # SQLの課題を解くには
 SQLを実行するにはMySQLに接続する必要があります。
 ```
