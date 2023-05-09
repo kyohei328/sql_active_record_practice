@@ -1,41 +1,56 @@
-# README
-
-# 環境構築
-`config/database.yml`のusername, passwordを各自の環境に合わせて修正してください。
+## プロジェクトのセットアップ手順
+### Dockerを使った環境準備(イメージのビルド)
 
 ```
-$ bundle install
-$ bundle exec rails db:create
-$ bundle exec rails db < db/seed.sql 
+docker compose build
 ```
 
-## 注意事項
-MySQLの8系を使う場合は以下のエラーが出ると思われます。`db/seed.sql`から`NO_AUTO_CREATE_USER`の記述を全て削除することで解決できます。
+### railsサーバーの起動(バックグラウンドでのコンテナの立ち上げとrailsサーバーの起動)
 
 ```
-$ rails db < db/seed.sql                                                                                                                                
-ERROR 1231 (42000) at line 3348: Variable 'sql_mode' can't be set to the value of 'NO_AUTO_CREATE_USER'
+docker compose up -d
 ```
 
+### コンテナ内に入る(rails・bundler・yarn関係のコマンドはコンテナ内で実行します)
 
-# SQLの課題を解くには
-SQLを実行するにはMySQLに接続する必要があります。
+```
+docker compose exec web bash
+```
+
+### データベースの作成(コンテナ内で実行してください)
+
+```bash
+bin/rails db:create
+```
+
+### 利用するテーブルを作成
+
+```bash
+bin/rails db < db/seed.sql
+```
+ここで下記のようにパスワードを聞かれた場合は、`password`と入力してください。  
+**実際に打った文字は見えないので注意してください**
+```shell
+Enter password:
+```
+
+## SQLの課題を解くには
+下記のコマンドでMySQLに接続してSQLを実行することができます。
 ```
 $ bundle exec rails dbconsole
 
 ...省略...
 
-mysql> use sakila_rails_development
+mysql> use sakila_rails_development;
 Database changed
 mysql> ここにSQLを打つ
-
- 
 ```
 
-# ActiveRecordの課題を解くには
-いつも通りrails consoleから実行すればOKです。
+## ActiveRecordの課題を解くには
+railsが起動しているコンテナ内で下記のコマンドを実行してください。
+
 ```
-$ bundle exec rails console
+$ bin/rails console
  irb(main):001:0> Actor.first
     (0.5ms)  SET NAMES utf8mb4,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483
    Actor Load (0.2ms)  SELECT `actor`.* FROM `actor` ORDER BY `actor`.`actor_id` ASC LIMIT 1
@@ -46,10 +61,9 @@ $ bundle exec rails console
  +----------+------------+-----------+-------------------------+
  1 row in set
  irb(main):002:0> 
-
 ```
 
-# 注意事項
+## 注意事項
 一般的なRailsアプリと異なる点がいくつかあります。
 
 例）
@@ -57,3 +71,23 @@ $ bundle exec rails console
 - `id`がないテーブルがある
 
 このあたりを注意してSQLを組み立てましょう。
+
+### Dockerコンテナの終了
+
+```bash
+docker compose down
+```
+
+### デバッグツールを使うときは
+
+#### railsサーバーを立ち上げているコンテナ名を確認する
+
+```bash
+docker compose ps
+```
+
+#### 該当のコンテナ名をattachする
+
+```bash
+docker attach コンテナ名
+```
