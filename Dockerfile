@@ -9,6 +9,7 @@ RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - \
 RUN mkdir /sql_active_record_practice
 WORKDIR /sql_active_record_practice
 RUN gem install bundler:2.3.17
+COPY config/database-docker.yml /sql_active_record_practice/config/database.yml
 COPY Gemfile /sql_active_record_practice/Gemfile
 COPY Gemfile.lock /sql_active_record_practice/Gemfile.lock
 RUN bundle install
