@@ -23,10 +23,10 @@ development:
 
 test:
   <<: *default
-  database: skila_rails_test
+  database: sakila_rails_test
 
 production:
   <<: *default
-  database: skila_rails_production
-  username: skila_rails
+  database: sakila_rails_production
+  username: sakila_rails
   password: <%= ENV['SKILA_RALS_DATABASE_PASSWORD'] %>

@@ -14,10 +14,30 @@ Dockerを利用したパターンの方が簡単に構築ができますので�
 ### データのセットアップ
 `config/database.yml`のusername, passwordを各自の環境に合わせて修正してください。
 
+### 利用Gemのインストール
 ```
 $ bundle install
+```
+### DB作成
+```
 $ bundle exec rails db:create
+```
+### データ入れ込み
+```
 $ bundle exec rails db < db/seed.sql
+```
+
+### データ入れ込み時にエラーが出た場合
+データ入れ込み時にご利用のMySQLのバージョンによって以下のエラーが出る可能性があります。その場合は`db/seed.sql`のファイルから下記の削除対象のコードを削除してください。
+#### エラー内容
+```
+$ rails db < db/seed.sql
+ERROR 1231 (42000) at line 3348: Variable 'sql_mode' can't be set to the value of 'NO_AUTO_CREATE_USER'
+```
+
+#### 削除対象のコード
+```sql
+/*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" */;;
 ```
 
 
