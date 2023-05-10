@@ -12,9 +12,9 @@ Dockerを利用したパターンの方が簡単に構築ができますので�
 - [Dockerを利用する場合](https://github.com/runteq/sql_active_record_practice/tree/feature/dockerize#docker%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E5%A0%B4%E5%90%88)
 ## Docker利用しない場合
 ### データのセットアップ
-`config/database.yml`のusername, passwordを各自の環境に合わせて修正してください。
+`config/database.yml`のusernameとpasswordを各自の環境に合わせて修正してください。
 
-### 利用Gemのインストール
+### 利用するGemのインストール
 ```
 $ bundle install
 ```
@@ -22,13 +22,13 @@ $ bundle install
 ```
 $ bundle exec rails db:create
 ```
-### データ入れ込み
+### データの投入
 ```
 $ bundle exec rails db < db/seed.sql
 ```
 
-### データ入れ込み時にエラーが出た場合
-データ入れ込み時にご利用のMySQLのバージョンによって以下のエラーが出る可能性があります。その場合は`db/seed.sql`のファイルから下記の削除対象のコードを削除してください。
+### データ投入時にエラーが出た場合
+データ入れ込み時にご利用のMySQLのバージョンによって以下のようなエラーが出る可能性があります。その場合は`db/seed.sql`のファイルから下記の削除対象のコードを削除してください。
 #### エラー内容
 ```
 $ rails db < db/seed.sql
@@ -44,63 +44,64 @@ ERROR 1231 (42000) at line 3348: Variable 'sql_mode' can't be set to the value o
 ## Docker利用する場合
 事前にDockerアプリがインストールされていることを確認してください。
 ### Dockerを使った環境準備(イメージのビルド)
-
+Dockerを使用して環境を準備するには、以下のコマンドを実行します。
 ```
 docker compose build
 ```
 
-### railsサーバーの起動(バックグラウンドでのコンテナの立ち上げとrailsサーバーの起動)
-
+### サーバーの起動
+以下のコマンドを実行すると、バックグラウンドでコンテナが起動し、RailsサーバーとDBサーバーが立ち上がります。
 ```
 docker compose up -d
 ```
 
-### コンテナ内に入る(rails・bundler・yarn関係のコマンドはコンテナ内で実行します)
-
+### コンテナ内に入る
+以下のコマンドでRailsサーバーのコンテナに入ります。
 ```
 docker compose exec web bash
 ```
 
 ### データベースの作成(コンテナ内で実行してください)
-
+以下のコマンドでデータベースを作成します。コンテナ内で実行してください。
 ```bash
 bin/rails db:create
 ```
 
 ### 利用するテーブルを作成(コンテナ内で実行してください)
-
+以下のコマンドで使用するテーブルを作成します。コンテナ内で実行してください。
 ```bash
 bin/rails db < db/seed.sql
 ```
-ここで下記のようにパスワードを聞かれた場合は、`password`と入力してください。  
-**実際に打った文字は見えないので注意してください**
+上記のコマンドを実行すると、パスワードを求められる場合があります。
+この場合は、`password`と入力してください。
+打った文字は表示されませんので、注意してください。
 ```shell
 Enter password:
 ```
 
 ### Dockerコンテナの終了する場合
-
+以下のコマンドでDockerコンテナを停止します。
 ```bash
 docker compose down
 ```
 
-### デバッグツールを使うときは
+### デバッグツールを利用する場合
 
-#### railsサーバーを立ち上げているコンテナ名を確認する
-
+#### Railsサーバーを立ち上げているコンテナ名を確認する
+デバッグツールを使用するには、まず以下のコマンドでRailsサーバーを立ち上げているコンテナ名を確認します。
 ```bash
 docker compose ps
 ```
 
-#### 該当のコンテナ名をattachする
-
+#### Railsのコンテナ名をattachする
+Railsのコンテナ名を確認したら、以下のコマンドでRailsコンテナにアタッチします。
 ```bash
 docker attach コンテナ名
 ```
 
-## SQLの課題を解くには
-下記のコマンドでMySQLに接続してSQLを実行することができます。
-Dockerを利用している場合は、`docker compose exec web bash`でコンテナ内に入ってから実行してください。
+## SQLの課題を解く方法
+SQLの課題を解くためには、以下のコマンドを使用してMySQLに接続し、SQLを実行します。
+Dockerを使用している場合は、まず`docker compose exec web bash`を使用してコンテナ内に入ってから、以下のコマンドを実行してください。
 ```
 $ bin/rails dbconsole
 
@@ -109,11 +110,12 @@ $ bin/rails dbconsole
 mysql> use sakila_rails_development;
 Database changed
 mysql> ここにSQLを打つ
+...
 ```
 
-## ActiveRecordの課題を解くには
-下記のコマンドを実行してください。
-Dockerを利用している場合は、`docker compose exec web bash`でコンテナ内に入ってから実行してください。
+## ActiveRecordの課題を解く方法
+以下のコマンドを使用してください。
+Dockerを使用している場合は、まず`docker compose exec web bash`を使用してコンテナ内に入ってから、以下のコマンドを実行してください。
 
 ```
 $ bin/rails console
@@ -127,13 +129,13 @@ $ bin/rails console
  +----------+------------+-----------+-------------------------+
  1 row in set
  irb(main):002:0>
+ ...
 ```
 
 ## 注意事項
-一般的なRailsアプリと異なる点がいくつかあります。
+この課題で利用するテーブルは一般的なRailsアプリで利用されるテーブルとは異なる点が下記になります。
 
-例）
 - テーブル名が全て単数系である
 - `id`がないテーブルがある
 
-このあたりを注意してSQLを組み立てましょう。
+これらを注意してSQLを組み立てましょう。
